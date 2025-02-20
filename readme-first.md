@@ -131,7 +131,7 @@ spec:
 ```
 Repeat this 7 times with different number where needed so you will have 8 Volumes at the end, 2 per worker node. 
 
-7. The Volumes in point 6 are used by examples/kustomization/base/tenant.yaml in lines 191 and further, where it creates a clame on the above volumes
+7. The Volumes in point 6 are used by examples/kustomization/base/tenant.yaml in lines 191 and further, where it creates a claim on the above volumes
 ```
       volumeClaimTemplate:
         apiVersion: v1
