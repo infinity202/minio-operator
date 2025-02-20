@@ -14,6 +14,12 @@ sudo chmod 744 /export1
 ```
 _Although the name can be choosen as you wish, make sure you remember them. Make sure they are not inside a user folder, like /home/bastiaan/_
 
+The number of subdirs you need to create depends on the value of volumesPerServer in line 173 of examples/kustomization/base/tenant.yaml 
+In my case it is
+```
+ volumesPerServer: 2
+```
+
 4. Deploy the cluster with k03s or any other deployement tool
 ```
 apiVersion: k0sctl.k0sproject.io/v1beta1
@@ -87,7 +93,7 @@ spec:
         telemetry:
           enabled: true
 ```
-5. When deployed login and create the default local file storage class  (it misses in k03s)
+5. When deployed login to Kubernetes management and create the default local file storage class  (it misses in k03s)
 ```
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -122,4 +128,21 @@ spec:
               operator: In
               values:
                 - k3s-wna1  # the host name of your worker node
+```
+Repeat this 7 times with different number where needed so you will have 8 Volumes at the end, 2 per worker node. 
+
+7. The Volumes in point 6 are used by examples/kustomization/base/tenant.yaml in lines 191 and further, where it creates a clame on the above volumes
+```
+      volumeClaimTemplate:
+        apiVersion: v1
+        kind: **persistentvolumeclaims**
+        metadata: { }
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: **8Gi**  ## make sure this matches !! Above volumes should be equal or bigger 
+          storageClassName: standard
+        status: { }
 ```
